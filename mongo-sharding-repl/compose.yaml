@@ -13,7 +13,6 @@ services:
       MONGODB_DATABASE_NAME: "somedb"
     networks:
       app-network:
-        # любой свободный адрес в той же подсети, что у остальных
         ipv4_address: 172.28.0.5  
       
       
@@ -31,7 +30,7 @@ services:
       - config-data-1:/data/db
     command:
       [
-        "--configsvr",  #запуск в режиме конфигурации
+        "--configsvr",
         "--replSet",
         "config_server",
         "--bind_ip_all",
@@ -56,7 +55,7 @@ services:
         - config-data-2:/data/db
       command:
         [
-          "--configsvr",  #запуск в режиме конфигурации
+          "--configsvr",
           "--replSet",
           "config_server",
           "--bind_ip_all",
@@ -81,7 +80,7 @@ services:
         - config-data-3:/data/db
       command:
         [
-          "--configsvr",  #запуск в режиме конфигурации
+          "--configsvr",
           "--replSet",
           "config_server",
           "--bind_ip_all",
@@ -106,9 +105,9 @@ services:
       - shard1-1-data:/data/db
     command:
       [
-        "--shardsvr", #запуск в режиме шардинга
+        "--shardsvr",
         "--replSet",
-        "shard1rs", #название реплики
+        "shard1rs",
         "--bind_ip_all",
         "--port",
         "27021"
@@ -131,9 +130,9 @@ services:
       - shard1-2-data:/data/db
     command:
       [
-        "--shardsvr", #запуск в режиме шардинга
+        "--shardsvr",
         "--replSet",
-        "shard1rs", #название реплики
+        "shard1rs",
         "--bind_ip_all",
         "--port",
         "27022"
@@ -156,9 +155,9 @@ services:
       - shard1-3-data:/data/db
     command:
       [
-        "--shardsvr", #запуск в режиме шардинга
+        "--shardsvr",
         "--replSet",
-        "shard1rs", #название реплики
+        "shard1rs",
         "--bind_ip_all",
         "--port",
         "27023"
@@ -181,10 +180,10 @@ services:
       - shard2-1-data:/data/db
     command:
       [
-        "--shardsvr", #запуск в режиме шардинга
+        "--shardsvr",
         "--replSet",
-        "shard2rs", #название реплик
-        "--bind_ip_all", # обратите внимание - она отличается от реплики 1-го шарда
+        "shard2rs",
+        "--bind_ip_all",
         "--port",
         "27024"
       ]
@@ -206,10 +205,10 @@ services:
       - shard2-2-data:/data/db
     command:
       [
-        "--shardsvr", #запуск в режиме шардинга
+        "--shardsvr",
         "--replSet",
-        "shard2rs", #название реплик
-        "--bind_ip_all", # обратите внимание - она отличается от реплики 1-го шарда
+        "shard2rs", 
+        "--bind_ip_all",
         "--port",
         "27025"
       ]
@@ -231,10 +230,10 @@ services:
       - shard2-3-data:/data/db
     command:
       [
-        "--shardsvr", #запуск в режиме шардинга
+        "--shardsvr",
         "--replSet",
-        "shard2rs", #название реплик
-        "--bind_ip_all", # обратите внимание - она отличается от реплики 1-го шарда
+        "shard2rs",
+        "--bind_ip_all",
         "--port",
         "27026"
       ]
@@ -254,9 +253,9 @@ services:
         ipv4_address: 172.28.0.7
     command:
       [
-        "mongos", #обычная mongo в режиме роутера
+        "mongos",
         "--configdb",
-        "config_server/configSrv-1:27017", #передача данных сервера конфигурации
+        "config_server/configSrv-1:27017",
         "--bind_ip_all",
         "--port",
         "27020"

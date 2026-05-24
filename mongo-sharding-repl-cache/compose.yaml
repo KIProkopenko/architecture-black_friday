@@ -1,5 +1,4 @@
 services:
-  # -------------------- API c кешем --------------------
   pymongo_api:
     container_name: sharding-repl-cache
     build:
@@ -7,17 +6,17 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mongos_router_repl
-      - redis             # <--- добавили зависимость от Redis
+      - redis             
     ports:
       - "8082:8082"
     environment:
       MONGODB_URL: "mongodb://mongos_router_repl:27020"
       MONGODB_DATABASE_NAME: "somedb"
-      REDIS_URL: "redis://redis:6379"   # <--- ВОТ СЮДА добавляем
+      REDIS_URL: "redis://redis:6379"   
     networks:
       app-network:
 
-  # -------------------- Redis для кеша --------------------
+
   redis:
     image: redis:7-alpine
     container_name: redis
@@ -27,7 +26,7 @@ services:
     networks:
       app-network:
 
-  # -------------------- Config servers --------------------
+
   configSrv-1:
     image: dh-mirror.gitverse.ru/mongo:latest
     container_name: configSrv-1
@@ -94,7 +93,7 @@ services:
     networks:
       app-network:
 
-  # -------------------- Shard 1 replica set --------------------
+  
   shard1-1:
     image: dh-mirror.gitverse.ru/mongo:latest
     container_name: shard1-1
@@ -161,7 +160,7 @@ services:
     networks:
       app-network:
 
-  # -------------------- Shard 2 replica set --------------------
+  
   shard2-1:
     image: dh-mirror.gitverse.ru/mongo:latest
     container_name: shard2-1
@@ -228,7 +227,7 @@ services:
     networks:
       app-network:
 
-  # -------------------- mongos router --------------------
+  
   mongos_router_repl:
     image: dh-mirror.gitverse.ru/mongo:latest
     container_name: mongos_router_repl
@@ -252,7 +251,7 @@ services:
     networks:
       app-network:
 
-# -------------------- Network & volumes --------------------
+
 networks:
   app-network:
     driver: bridge
