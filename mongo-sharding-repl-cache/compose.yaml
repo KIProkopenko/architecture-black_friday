@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   pymongo_api:
     container_name: sharding-repl-cache
@@ -6,16 +8,15 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mongos_router_repl
-      - redis             
+      - redis
     ports:
-      - "8082:8082"
+      - "8080:8080"
     environment:
       MONGODB_URL: "mongodb://mongos_router_repl:27020"
       MONGODB_DATABASE_NAME: "somedb"
-      REDIS_URL: "redis://redis:6379"   
+      REDIS_URL: "redis://redis:6379"
     networks:
       app-network:
-
 
   redis:
     image: redis:7-alpine
@@ -26,9 +27,8 @@ services:
     networks:
       app-network:
 
-
   configSrv-1:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: configSrv-1
     ports:
       - "27017:27017"
@@ -42,15 +42,18 @@ services:
         "--bind_ip_all",
         "--port", "27017"
       ]
+    # healthcheck обновлён
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27017 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s # Увеличено для инициализации
     networks:
       app-network:
 
   configSrv-2:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: configSrv-2
     ports:
       - "27018:27018"
@@ -65,14 +68,16 @@ services:
         "--port", "27018"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27018 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
   configSrv-3:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: configSrv-3
     ports:
       - "27019:27019"
@@ -87,15 +92,16 @@ services:
         "--port", "27019"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27019 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
-  
   shard1-1:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: shard1-1
     ports:
       - "27021:27021"
@@ -110,14 +116,16 @@ services:
         "--port", "27021"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27021", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27021 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
   shard1-2:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: shard1-2
     ports:
       - "27022:27022"
@@ -132,14 +140,16 @@ services:
         "--port", "27022"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27022", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27022 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
   shard1-3:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: shard1-3
     ports:
       - "27023:27023"
@@ -154,15 +164,16 @@ services:
         "--port", "27023"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27023", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27023 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
-  
   shard2-1:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: shard2-1
     ports:
       - "27024:27024"
@@ -177,14 +188,16 @@ services:
         "--port", "27024"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27024", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27024 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
   shard2-2:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: shard2-2
     ports:
       - "27025:27025"
@@ -199,14 +212,16 @@ services:
         "--port", "27025"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27025", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27025 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
   shard2-3:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: shard2-3
     ports:
       - "27026:27026"
@@ -221,15 +236,16 @@ services:
         "--port", "27026"
       ]
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27026", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27026 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       app-network:
 
-  
   mongos_router_repl:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: mongo:6.0.14 # Заменено
     container_name: mongos_router_repl
     depends_on:
       - configSrv-1
@@ -244,13 +260,15 @@ services:
         "--bind_ip_all",
         "--port", "27020"
       ]
+    # healthcheck обновлён
     healthcheck:
-      test: ["CMD", "mongo", "--port", "27020", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      start_period: 10s
+      test: ["CMD-SHELL", "mongosh --port 27020 --quiet --eval \"try { const result = db.adminCommand('ping'); process.exit(result.ok === 1 ? 0 : 1); } catch(e) { print('Health check failed:', e.message); process.exit(1); }\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s # Увеличено, т.к. зависит от config серверов
     networks:
       app-network:
-
 
 networks:
   app-network:
